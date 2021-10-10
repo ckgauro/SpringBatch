@@ -1,4 +1,8 @@
-package PACKAGE_NAME;/**
+/**
  * @author Chandra
- */public class HelloworldApplication {
+ */
+public class HelloworldApplication {
+    public static void main(String[] args) {
+        System.out.println("Hello World");
+    }
 }
