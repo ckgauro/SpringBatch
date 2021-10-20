@@ -71,6 +71,8 @@ Consider an environment where users have to do a lot of batch processing. This w
 [Hello Project](https://github.com/ckgauro/SpringBatch/tree/master/Master%20Spring%20Batch/Section%201%20Meet%20the%20Spring%20Batch/project/helloworld)
 
 -   **@EnableBatchProcessing** :The **@EnableBatchProcessing** annotation enables Spring Batch features and provides a base configuration for setting up batch jobs.
+Add many critical beans (including JobLuncher and Job Repository) that support jobs and save you a lot of leg work.
+
 -   **@SpringBootApplication** : The @SpringBootApplication annotation comes from the Spring Boot project that provides standalone, production-ready, Spring-based applications. It specifies a configuration class that declares one or more Spring beans and also triggers auto-configuration and Spring’s component scanning.
 
 -   **Tasklet** :A **org.springframework.batch.core.step.tasklet.Tasklet** supports a simple interface that has only one method, execute(), which is called repeatedly until it either returns RepeatStatus.FINISHED or throws an exception to signal a failure. Each call to the Tasklet is wrapped in a transaction.
