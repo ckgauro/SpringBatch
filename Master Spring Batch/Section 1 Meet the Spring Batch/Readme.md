@@ -28,6 +28,14 @@ Spring Batch is a lightweight, comprehensive batch framework designed to enable 
 ### When to use Spring Batch?
 Consider an environment where users have to do a lot of batch processing. This will be quite different from a typical web application which has to work 24/7. But in classic environments it's not unusual to do the heavy lifting for example during the night when there are no regular users using your system. Batch processing includes typical tasks like reading and writing to files, transforming data, reading from or writing to databases, create reports, import and export data and things like that. Often these steps have to be chained together or you have to create more complex workflows where you have to define which job steps can be run in parallel or have to be run sequentially etc. That's where a framework like Spring Batch can be very handy. Spring Boot Batch provides reusable functions that are essential in processing large volumes of records, including logging/tracing, transaction management, job processing statistics, job restart, skip, and resource management. It also provides more advanced technical services and features that will enable extremely high-volume and high performance batch jobs though optimization and partitioning techniques.Simple as well as complex, high-volume batch jobs can leverage the framework in a highly scalable manner to process significant volumes of information.
 
+### Spring Batch provides, among others, the next features:
+
+-	Transaction management, to allow you to focus on business processing.
+-	Chunk based processing, to process a large value of data by dividing it in small pieces.
+-	Start/Stop/Restart/Skip/Retry capabilities, to handle non-interactive management of the process.
+-	Web based administration interface (Spring Batch Admin), it provides an API for administering tasks.
+-	Based on Spring framework, so it includes all the configuration options, including Dependency Injection.
+-	Compliance with JSR 352: Batch Applications for the Java Platform.
 
 ### How Spring Batch works?
 
@@ -62,11 +70,68 @@ Consider an environment where users have to do a lot of batch processing. This w
 -   Create project
 [Hello Project](https://github.com/ckgauro/SpringBatch/tree/master/Master%20Spring%20Batch/Section%201%20Meet%20the%20Spring%20Batch/project/helloworld)
 
-@EnableBatchProcessing 
+-   **@EnableBatchProcessing** :The **@EnableBatchProcessing** annotation enables Spring Batch features and provides a base configuration for setting up batch jobs.
+-   **@SpringBootApplication** : The @SpringBootApplication annotation comes from the Spring Boot project that provides standalone, production-ready, Spring-based applications. It specifies a configuration class that declares one or more Spring beans and also triggers auto-configuration and Spring’s component scanning.
 
-tasklet
-JobBuilderFactory
-StepBuilderFactory
+-   **Tasklet** :A **org.springframework.batch.core.step.tasklet.Tasklet** supports a simple interface that has only one method, execute(), which is called repeatedly until it either returns RepeatStatus.FINISHED or throws an exception to signal a failure. Each call to the Tasklet is wrapped in a transaction.
+
+```java
+public interface Tasklet {
+
+	/**
+	 * Given the current context in the form of a step contribution, do whatever
+	 * is necessary to process this unit inside a transaction. Implementations
+	 * return {@link RepeatStatus#FINISHED} if finished. If not they return
+	 * {@link RepeatStatus#CONTINUABLE}. On failure throws an exception.
+	 * 
+	 * @param contribution mutable state to be passed back to update the current
+	 * step execution
+	 * @param chunkContext attributes shared between invocations but not between
+	 * restarts
+	 * @return an {@link RepeatStatus} indicating whether processing is
+	 * continuable. Returning {@code null} is interpreted as {@link RepeatStatus#FINISHED}
+	 *
+	 * @throws Exception thrown if error occurs during execution.
+	 */
+	@Nullable
+	RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception;
+
+}
+
+```
+
+-   **RepeatStatus** : It is enum Indicates that processing can continue or that processing is finished (either successful or unsuccessful)
+-   **JobBuilderFactory** : org.springframework.batch.core.configuration.annotation.JobBuilderFactory
+    Creates a job builder and initializes its job repository. Note that if the builder is used to create a @Bean definition then the name of the job and the bean name might be different.
+
+```java
+public class JobBuilderFactory {
+
+	private JobRepository jobRepository;
+
+	public JobBuilderFactory(JobRepository jobRepository) {
+		this.jobRepository = jobRepository;
+	}
+
+	/**
+	 * Creates a job builder and initializes its job repository. Note that if the builder is used to create a &#64;Bean
+	 * definition then the name of the job and the bean name might be different.
+	 * 
+	 * @param name the name of the job
+	 * @return a job builder
+	 */
+	public JobBuilder get(String name) {
+		JobBuilder builder = new JobBuilder(name).repository(jobRepository);
+		return builder;
+	}
+
+}
+
+```
+
+-   **StepBuilderFactory** :org.springframework.batch.core.configuration.annotation.StepBuilderFactory 
+Creates a step builder and initializes its job repository and transaction manager. Note that if the builder is used to create a &#64;Bean definition then the name of the step and the bean name might be different.
+
 
 
 3. Review Hello World Batch

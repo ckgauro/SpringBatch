@@ -22,40 +22,49 @@ import org.springframework.context.annotation.Bean;
 @EnableBatchProcessing
 @SpringBootApplication
 public class HelloworldApplication {
-	 @Autowired
-	    private JobBuilderFactory jobs;
+    @Autowired
+    private JobBuilderFactory jobs;
 
-	    @Autowired
-	    private StepBuilderFactory steps;
-
-
-
-	    public Tasklet helloWorldTasklet(){
-	        return (new Tasklet() {
-	            @Override
-	            public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
-	                System.out.println("Hello world");
-	                return RepeatStatus.FINISHED;
-	            }
-	        });
-	    }
+    @Autowired
+    private StepBuilderFactory steps;
 
 
-	    @Bean
-	    public Step step1(){
-	        return steps.get("step1")
-	                .tasklet(helloWorldTasklet())
-	                .build();
-	    }
+    public Tasklet helloWorldTasklet(String str) {
+        return (new Tasklet() {
+            @Override
+            public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
+                System.out.println(str);
+                Thread.sleep(1000);
+                return RepeatStatus.FINISHED;
+            }
+        });
+    }
 
-	    @Bean
-	    public Job helloWorldJob(){
-	        return jobs.get("helloWorldJob").start(step1()).build();
-	    }
+
+    @Bean
+    public Step step1() {
+        return steps.get("step1")
+                .tasklet(helloWorldTasklet("Step 1: Hello world"))
+				//.tasklet(helloWorldTasklet("Step 2: This is new Step 1 "))
+                .build();
+    }
+
+    @Bean
+    public Step step2() {
+        return steps.get("step2")
+                .tasklet(helloWorldTasklet("Hello Step 2"))
+                .build();
+    }
+
+    @Bean
+    public Job helloWorldJob() {
+        //return jobs.get("helloWorldJob").start(step1()).build();
+        return jobs.get("helloWorldJob").start(step1()).next(step2()).build();
+    }
 
 
-	public static void main(String[] args) {
-		SpringApplication.run(HelloworldApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(HelloworldApplication.class, args);
+    }
 
 }
