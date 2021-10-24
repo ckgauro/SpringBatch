@@ -1,11 +1,9 @@
-package com.gauro.helloworld.config;
+package com.swt.helloworld.config;
 
-import com.gauro.helloworld.listener.HwJobExecutionListener;
-import com.gauro.helloworld.listener.HwStepExecutionListiner;
-import com.gauro.helloworld.processor.InMemeItemProcessor;
-import com.gauro.helloworld.reader.InMemReader;
-import com.gauro.helloworld.writer.ConsoleItemWriter;
+import com.swt.helloworld.listener.HwJobExecutionListener;
+import com.swt.helloworld.listener.HwStepExecutionListener;
 import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -27,20 +25,18 @@ public class BatchCondifguration {
 
     @Autowired
     private StepBuilderFactory steps;
+
     @Autowired
     private HwJobExecutionListener hwJobExecutionListener;
 
     @Autowired
-    private HwStepExecutionListiner hwStepExecutionListiner;
-
-    @Autowired
-    private InMemeItemProcessor inMemeItemProcessor;
+    private HwStepExecutionListener hwStepExecutionListener;
 
     public Tasklet helloWorldTasklet(){
         return (new Tasklet() {
             @Override
             public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
-                System.out.println("Hello World");
+                System.out.println("Hello world  " );
                 return RepeatStatus.FINISHED;
             }
         });
@@ -48,36 +44,16 @@ public class BatchCondifguration {
 
     @Bean
     public Step step1(){
-        return steps.get("step1").listener(hwStepExecutionListiner).tasklet(helloWorldTasklet())
+        return steps.get("step1")
+                .listener(hwStepExecutionListener)
+                .tasklet(helloWorldTasklet())
                 .build();
     }
 
     @Bean
-    public InMemReader reader(){
-        return  new InMemReader();
-    }
-
-    @Bean
-    public Step step2(){
-        return steps.get("step2").<Integer,Integer>chunk(3)
-                .reader(reader())
-                .processor(inMemeItemProcessor)
-                .writer(new ConsoleItemWriter())
-                .build();
-    }
-
-    @Bean
-    public Job hellowWorldJob(){
-        return jobs.get("hellowWorldJob")
+    public Job helloWorldJob(){
+        return jobs.get("helloWorldJob")
                 .listener(hwJobExecutionListener)
-                .start(step1())
-                .next(step2())
-                .build();
-
+                .start(step1()).build();
     }
-
-
-
-
-
 }

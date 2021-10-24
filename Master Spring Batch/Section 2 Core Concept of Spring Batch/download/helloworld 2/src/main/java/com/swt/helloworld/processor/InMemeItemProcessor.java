@@ -1,4 +1,4 @@
-package com.gauro.helloworld.processor;
+package com.swt.helloworld.processor;
 
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.stereotype.Component;

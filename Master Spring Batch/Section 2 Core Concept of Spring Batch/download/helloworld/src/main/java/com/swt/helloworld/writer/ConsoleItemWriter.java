@@ -1,4 +1,4 @@
-package com.gauro.helloworld.writer;
+package com.swt.helloworld.writer;
 
 import org.springframework.batch.item.support.AbstractItemStreamItemWriter;
 
@@ -8,6 +8,6 @@ public class ConsoleItemWriter extends AbstractItemStreamItemWriter {
     @Override
     public void write(List items) throws Exception {
         items.stream().forEach(System.out::println);
-        System.out.println("******** writing each chunk *******");
+        System.out.println(" ************ writing each chunck ***********");
     }
 }
